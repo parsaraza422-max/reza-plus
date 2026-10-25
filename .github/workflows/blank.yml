@@ -1,0 +1,38 @@
+name: Build Reza Plus APK
+
+on:
+workflow_dispatch:
+
+jobs:
+build:
+runs-on: ubuntu-22.04
+
+```
+steps:
+  - name: دریافت پروژه
+    uses: actions/checkout@v4
+
+  - name: نصب ابزارهای موردنیاز
+    run: |
+      sudo apt-get update
+      sudo apt-get install -y python3-pip python3-venv git zip unzip openjdk-17-jdk
+
+  - name: نصب Buildozer
+    run: |
+      python3 -m venv .venv
+      . .venv/bin/activate
+      pip install --upgrade pip
+      pip install buildozer cython==0.29.36
+
+  - name: ساخت APK
+    run: |
+      . .venv/bin/activate
+      buildozer android debug
+
+  - name: ذخیره فایل APK
+    uses: actions/upload-artifact@v4
+    with:
+      name: Reza-Plus-APK
+      path: bin/*.apk
+      if-no-files-found: error
+```
